@@ -55,10 +55,15 @@ jobs:
     container: s1lentq/linux86buildtools:latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    - name: update apt-get
+      run: apt-get update
+    - name: test
+      run: |
+        apt-get install -y git
+    - name: Git Clone
+      run: |
+        git clone https://github.com/antoniolago/metamod-r
+        cd metamod-r
 
     - name: Build using Intel C++ Compiler 19.0 (i386)
       # Build i386 version
