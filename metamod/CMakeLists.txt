@@ -41,7 +41,20 @@ set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wall -fno-exceptions -fno-builtin -Wno-unkn
 
 # Remove noxref code and data
 set(COMPILE_FLAGS "${COMPILE_FLAGS} -ffunction-sections -fdata-sections")
-
+# Compiler and linker flags for both 32-bit and 64-bit builds
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(STATUS "Building for 64-bit architecture")
+    set(ARCH "x86_64")
+    set(COMPILE_FLAGS "-m64")
+    set(LINK_FLAGS "-m64")
+    set(OUTPUT_NAME "metamod_x86_64")
+else()
+    message(STATUS "Building for 32-bit architecture")
+    set(ARCH "i686")
+    set(COMPILE_FLAGS "-m32 -U_FORTIFY_SOURCE")
+    set(LINK_FLAGS "-m32")
+    set(OUTPUT_NAME "metamod_i686")
+endif()
 if (DEBUG)
 	set(COMPILE_FLAGS "${COMPILE_FLAGS} -g3 -O0 -ggdb")
 else()
@@ -190,9 +203,9 @@ if (CMAKE_BUILD_TYPE MATCHES COMPAT_GLIBC)
 endif()
 
 set_target_properties(metamod PROPERTIES
-	OUTPUT_NAME metamod_i386
+    OUTPUT_NAME ${OUTPUT_NAME}
 	PREFIX ""
-	COMPILE_FLAGS ${COMPILE_FLAGS}
-	LINK_FLAGS ${LINK_FLAGS}
-	POSITION_INDEPENDENT_CODE ON
+    COMPILE_FLAGS ${COMPILE_FLAGS}
+    LINK_FLAGS ${LINK_FLAGS}
+    POSITION_INDEPENDENT_CODE ON
 )
