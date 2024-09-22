@@ -59,14 +59,14 @@ jobs:
       with:
         fetch-depth: 0
 
+    
     - name: Build inside Docker
-      uses: docker://s1lentq/linux86buildtools:latest
-      with:
-        entrypoint: ""
-        run: |
-          rm -rf build && CC=icc CXX=icpc cmake -DCMAKE_BUILD_TYPE=COMPAT_GLIBC -B build && cmake --build build -j8
-          mkdir -p publish/sdk
-          mkdir -p publish/addons/metamod
+      run: |
+        docker run --rm -v ${{ github.workspace }}:/workspace s1lentq/linux86buildtools:latest /bin/bash -c "
+          cd /workspace &&
+          rm -rf build && CC=icc CXX=icpc cmake -DCMAKE_BUILD_TYPE=COMPAT_GLIBC -B build && cmake --build build -j8 &&
+          mkdir -p publish/sdk &&
+          mkdir -p publish/addons/metamod &&
           rsync -a \
             --include=dllapi.h \
             --include=engine_api.h \
@@ -75,25 +75,21 @@ jobs:
             --include=meta_api.h \
             --include=mutil.h \
             --include=plinfo.h \
-            --exclude='*' metamod/src/ publish/sdk
-          rsync metamod/extra/config.ini publish/addons/metamod
-          rsync -a metamod/extra/example/ publish/example_plugin
-          rsync -a publish/sdk/ publish/example_plugin/include/metamod
-          mv build/metamod/metamod_i386.so publish/addons/metamod/metamod_i386.so
-          mv metamod/version/appversion.h publish/appversion.h
+            --exclude='*' metamod/src/ publish/sdk &&
+          rsync metamod/extra/config.ini publish/addons/metamod &&
+          rsync -a metamod/extra/example/ publish/example_plugin &&
+          rsync -a publish/sdk/ publish/example_plugin/include/metamod &&
+          mv build/metamod/metamod_i386.so publish/addons/metamod/metamod_i386.so &&
+          mv metamod/version/appversion.h publish/appversion.h &&
           binaries=(
-            "publish/addons/metamod/metamod_i386.so"
-          )
-          bash ./metamod/version/glibc_test.sh ${binaries[@]}
-          if [[ $? -ne 0 ]]; then
+            'publish/addons/metamod/metamod_i386.so'
+          ) &&
+          bash ./metamod/version/glibc_test.sh \${binaries[@]} &&
+          if [[ \$? -ne 0 ]]; then
             exit 1 # Assertion failed
           fi
+        "
 
-    - name: Copy artifacts from Docker container
-      run: |
-        container_id=$(docker ps -q --filter ancestor=s1lentq/linux86buildtools:latest)
-        docker cp $container_id:/publish ./publish
-      
     - name: Deploy artifacts
       uses: actions/upload-artifact@v3.1.1
       id: upload-job
