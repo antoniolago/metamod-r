@@ -52,7 +52,6 @@ jobs:
   linux:
     name: 'Linux'
     runs-on: ubuntu-latest
-    container: s1lentq/linux86buildtools:latest
 
     steps:
     - name: Checkout
