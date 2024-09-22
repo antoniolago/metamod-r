@@ -89,6 +89,11 @@ jobs:
             exit 1 # Assertion failed
           fi
 
+    - name: Copy artifacts from Docker container
+      run: |
+        container_id=$(docker ps -q --filter ancestor=s1lentq/linux86buildtools:latest)
+        docker cp $container_id:/publish ./publish
+      
     - name: Deploy artifacts
       uses: actions/upload-artifact@v3.1.1
       id: upload-job
