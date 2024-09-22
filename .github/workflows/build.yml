@@ -59,9 +59,9 @@ jobs:
       run: |
         apt-get update
         apt-get install -y git
-        cd ..
-        git clone https://github.com/antoniolago/metamod-r
-        cd metamod-r
+        git clone https://github.com/antoniolago/metamod-r temp
+        cp -R temp ./
+        rm temp -rf
 
     - name: Build using Intel C++ Compiler 19.0 (i386)
       # Build i386 version
