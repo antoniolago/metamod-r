@@ -55,6 +55,9 @@ jobs:
     container: s1lentq/linux86buildtools:latest
 
     steps:
+    - name: test
+      run: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash && apt-get remove nodejs && nvm install 16
     - name: Checkout
       uses: actions/checkout@v3
       with:
