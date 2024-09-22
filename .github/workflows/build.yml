@@ -51,14 +51,10 @@ jobs:
 
   linux:
     name: 'Linux'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu
     container: s1lentq/linux86buildtools:latest
 
     steps:
-    - name: Add missing lib
-      # Build i386 version
-      run: apt-get update && apt-get install -y libc6 libc6-dev && apt-get clean
-
     - name: Checkout
       uses: actions/checkout@v3
       with:
