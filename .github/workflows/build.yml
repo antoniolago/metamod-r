@@ -56,9 +56,9 @@ jobs:
 
     steps:
     - name: update apt-get
-      run: sudo apt-get update
+      run: apt-get update
     - name: install curl
-      run: sudo apt-get install curl
+      run: apt-get install curl
     - name: test
       run: |
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash && apt-get remove nodejs && nvm install 16
