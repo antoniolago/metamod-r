@@ -101,28 +101,6 @@ jobs:
         fi
       shell: bash
 
-    # Build for i686 architecture
-    - name: Build using Intel C++ Compiler 19.0 (i686)
-      run: |
-        rm -rf build && CC=icc CXX=icpc cmake -DCMAKE_BUILD_TYPE=COMPAT_GLIBC -B build/i686 && cmake --build build/i686 -j8
-
-    # Move files for i686
-    - name: Move files for i686
-      run: |
-        mkdir -p publish/addons/metamod_i686
-        mv build/i686/metamod/metamod_i686.so publish/addons/metamod_i686/metamod_i686.so
-        mv metamod/version/appversion.h publish/appversion_i686.h
-
-    # Run GLIBC/ABI version compatibility test for i686
-    - name: Run GLIBC/ABI version compat test (i686)
-      run: |
-        binaries=( "publish/addons/metamod_i686/metamod_i686.so" )
-        bash ./metamod/version/glibc_test.sh ${binaries[@]}
-        if [[ $? -ne 0 ]]; then
-          exit 1 # Assertion failed
-        fi
-      shell: bash
-
     # Deploy artifacts
     - name: Deploy artifacts
       uses: actions/upload-artifact@v3.1.1
