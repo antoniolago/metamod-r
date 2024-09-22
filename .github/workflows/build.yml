@@ -57,11 +57,10 @@ jobs:
     steps:
     - name: update apt-get
       run: apt-get update
-    - name: install curl
-      run: apt-get install -y curl
     - name: test
       run: |
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash && nvm install 20
+        echo "deb http://ftp.us.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list &&
+        apt-get update apt-get install build-essential -y
     - name: Checkout
       uses: actions/checkout@v3
       with:
