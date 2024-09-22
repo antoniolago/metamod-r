@@ -102,11 +102,21 @@ jobs:
       shell: bash
 
     - name: Deploy artifacts
-      uses: actions/upload-artifact@v3.1.1
+      run: |
+        # Define variables
+        ARTIFACT_NAME="linux32"
+        ARTIFACT_PATH="publish/*"
+        UPLOAD_URL="https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
+    
+        # Create a tarball of the artifacts
+        tar -czvf ${ARTIFACT_NAME}.tar.gz -C publish .
+    
+        # Upload the tarball using curl
+        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+             -H "Content-Type: application/gzip" \
+             --data-binary @${ARTIFACT_NAME}.tar.gz \
+             "${UPLOAD_URL}?name=${ARTIFACT_NAME}"
       id: upload-job
-      with:
-        name: linux32
-        path: publish/*
 
     - name: Cleanup temporary artifacts
       if: success() && steps.upload-job.outcome == 'success'
