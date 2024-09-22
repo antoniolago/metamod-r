@@ -55,13 +55,17 @@ jobs:
     container: s1lentq/linux86buildtools:latest
 
     steps:
+    - name: Add missing lib
+      # Build i386 version
+      run: apt-get update && apt-get install -y libc6 libc6-dev && apt-get clean
+
     - name: Checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    # Build i386 version
     - name: Build using Intel C++ Compiler 19.0 (i386)
+      # Build i386 version
       run: |
         rm -rf build && CC=icc CXX=icpc cmake -DCMAKE_BUILD_TYPE=COMPAT_GLIBC -B build/i386 && cmake --build build/i386 -j8
 
