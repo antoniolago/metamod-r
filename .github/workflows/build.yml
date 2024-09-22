@@ -61,7 +61,7 @@ jobs:
       run: apt-get install -y curl
     - name: test
       run: |
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash && apt-get remove -y nodejs && nvm install 16
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash && nvm install 20
     - name: Checkout
       uses: actions/checkout@v3
       with:
