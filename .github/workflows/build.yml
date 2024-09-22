@@ -55,13 +55,11 @@ jobs:
     container: s1lentq/linux86buildtools:latest
 
     steps:
-    - name: update apt-get
-      run: apt-get update
-    - name: test
-      run: |
-        apt-get install -y git
     - name: Git Clone
       run: |
+        apt-get update
+        apt-get install -y git
+        cd ..
         git clone https://github.com/antoniolago/metamod-r
         cd metamod-r
 
